@@ -1,12 +1,11 @@
+from datetime import datetime, timedelta
+from math import ceil
 from typing import Dict, Tuple
 
-from ortools.sat.python import cp_model
-from math import ceil
-import plotly.figure_factory as ff
-from datetime import datetime, timedelta
 import numpy as np
+import plotly.figure_factory as ff
+from ortools.sat.python import cp_model
 
-# model: Model = Model(sense=MINIMIZE, solver_name=GRB)
 model = cp_model.CpModel()
 
 BigM = 10000
@@ -187,16 +186,11 @@ for d in range(DAYS):
                   if All_Jobs[key[0]].product == 3 and key[1] != -1 and key[3] == d) <= 0)
 
 model.max_gap = 4
-# model.Minimize(sum(x for key, x in X.items()) + sum(v for key,
-#                v in V.items()) + sum(z for key, z in Z.items()))
-# status = model.optimize(90)
-# model._SetObjective(C_ov * machine_m.cost)
 model.Minimize(C_ov * machine_m.cost)
 solver = cp_model.CpSolver()
 status = solver.Solve(model)
 for d in range(DAYS):
     for key, x in X.items():
-        # if key[3] == d and solver.Value(x) ==1 :
         if key[3] == d and solver.Value(x) > 0.99:
             i = key[0]
             j = key[1]
@@ -208,8 +202,6 @@ for d in range(DAYS):
             p2 = All_Jobs[j].product
             pf2 = All_Jobs[j].fproduct
 
-            # print("D{} - Machine M{}-{} - P{}-{}".format(d + 1, m_type + 1, m_ftype + 1,
-            #                                              p1 + 1, pf1 + 1))
             print("D{} - Machine M{}-{} - P{}-{} - t{} : t{}".format(d + 1, m_type + 1, m_ftype + 1,
                                                                      p1 + 1, pf1 + 1,
                                                                      solver.Value(T[i, m, d]) -
