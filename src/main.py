@@ -6,6 +6,9 @@ import plotly.figure_factory as ff
 from datetime import datetime, timedelta
 import numpy as np
 
+# model: Model = Model(sense=MINIMIZE, solver_name=GRB)
+model = cp_model.CpModel()
+
 BigM = 10000
 #########
 DAYS = 4
@@ -20,7 +23,7 @@ Products_data: list[list[tuple[int, int]]] = [  # product = (machine_id, process
 Products_output = [  # (quantity, number of days).
     (4, 1), (4, 1), (2, 1), (3, 4), (3, 4)]
 I_hr = 16
-C_ov = 0.25
+C_ov = model.NewIntVar(0, BigM, "C_ov")
 UB_machines = [4, 4, 4, 4, 4]
 No_p = len(Products_data)
 p_day = [ceil(Products_output[i][0] / Products_output[i][1])
@@ -59,8 +62,6 @@ for p in range(len(Products_data)):
             if j == len(Products_data[p]) - 1:
                 All_Jobs[ind].last = 1
 
-# model: Model = Model(sense=MINIMIZE, solver_name=GRB)
-model = cp_model.CpModel()
 X = {}
 for m in range(len(All_Machines)):
     machine_m = All_Machines[m]
@@ -186,16 +187,17 @@ for d in range(DAYS):
                   if All_Jobs[key[0]].product == 3 and key[1] != -1 and key[3] == d) <= 0)
 
 model.max_gap = 4
-# model.Minimize(C_ov * machine_m.cost)
 # model.Minimize(sum(x for key, x in X.items()) + sum(v for key,
 #                v in V.items()) + sum(z for key, z in Z.items()))
 # status = model.optimize(90)
 # model._SetObjective(C_ov * machine_m.cost)
+model.Minimize(C_ov * machine_m.cost)
 solver = cp_model.CpSolver()
 status = solver.Solve(model)
 for d in range(DAYS):
     for key, x in X.items():
-        if key[3] == d:
+        # if key[3] == d and solver.Value(x) ==1 :
+        if key[3] == d and solver.Value(x) > 0.99:
             i = key[0]
             j = key[1]
             p1 = All_Jobs[i].product
@@ -210,9 +212,9 @@ for d in range(DAYS):
             #                                              p1 + 1, pf1 + 1))
             print("D{} - Machine M{}-{} - P{}-{} - t{} : t{}".format(d + 1, m_type + 1, m_ftype + 1,
                                                                      p1 + 1, pf1 + 1,
-                                                                     T[i, m, d] -
+                                                                     solver.Value(T[i, m, d]) -
                                                                      All_Jobs[i].duration,
-                                                                     T[i, m, d]))
+                                                                     solver.Value(T[i, m, d])))
 
 
 print(status)
