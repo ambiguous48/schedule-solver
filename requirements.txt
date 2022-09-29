@@ -1,8 +1,11 @@
+absl-py==1.2.0
 cffi==1.15.0
 glpk==0.4.6
 gurobipy==9.5.2
 mip==1.14.1
 numpy==1.23.3
+ortools==9.4.1874
 plotly==5.10.0
+protobuf==4.21.6
 pycparser==2.21
 tenacity==8.1.0

@@ -1,6 +1,6 @@
 from typing import Dict, Tuple
 
-from mip import *
+from ortools.sat.python import cp_model as Model
 from math import ceil
 import plotly.figure_factory as ff
 from datetime import datetime, timedelta
