@@ -1,0 +1,8 @@
+cffi==1.15.0
+glpk==0.4.6
+gurobipy==9.5.2
+mip==1.14.1
+numpy==1.23.3
+plotly==5.10.0
+pycparser==2.21
+tenacity==8.1.0
