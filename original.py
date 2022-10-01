@@ -197,7 +197,9 @@ if status == cp_model.OPTIMAL or status == cp_model.FEASIBLE:
                 p2 = All_Jobs[j].product
                 pf2 = All_Jobs[j].fproduct
                 ts = solver.Value(T[i, m, d]) - All_Jobs[i].duration + d * 24
+                print(ts)
                 tf = solver.Value(T[i, m, d]) + d * 24
+                print(tf)
                 print("D{} - Machine M{}-{} - P{}-{} - t{} : t{}".format(d + 1, m_type + 1, m_ftype + 1,
                                                                          p1 + 1, pf1 + 1, ts, tf))
                 sol_list.append(dict(Product='Product{}-{}'.format(p1+1, pf1+1),
