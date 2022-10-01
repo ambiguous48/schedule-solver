@@ -183,6 +183,7 @@ status = solver.Solve(model)
 
 sol_list = []
 if status == cp_model.OPTIMAL or status == cp_model.FEASIBLE:
+    print(f'Status: {solver.StatusName(status)}')
     print(f'Minimum of objective function: {solver.ObjectiveValue()}\n')
     for d in range(D):
         for key, x in X.items():
