@@ -43,7 +43,8 @@
 				"GitHub.copilot-labs",
 				"ms-toolsai.jupyter",
 				"ms-toolsai.jupyter-renderers",
-				"ms-toolsai.jupyter-keymap"
+				"ms-toolsai.jupyter-keymap",
+				"eamodio.gitlens"
 			]
 		}
 	},
